@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title th:text="${pageTitle}">결과</title>
+  <link rel="stylesheet" href="/css/result.css" th:href="@{/css/result.css}">
+  <link rel="stylesheet" href="/css/header.css" th:href="@{/css/header.css}">
+  <link rel="stylesheet" href="" th:href="@{/css/FinishModal.css}">
+</head>
+<body>
+<div id="app">
+  <!-- Header  -->
+  <header id="header" class="store depth1">
+    <div class="top">
+      <div class="logo">
+        <a th:href="@{/}">
+          <img src="../img/black-yagiyo.png" alt=""
+          /></a>
+      </div>
+      <!--      검색어   -->
+      <div class="search_box">
+        <form th:action="@{/search}" method="get">
+          <input type="text" name="query" value=""/>
+          <button type="submit"></button>
+        </form>
+        <!-- <p id="recent-search"></p> -->
+      </div>
+      <nav class="gnb_box">
+        <span class="hot">HOT</span>
+        <a th:href="@{/name}">📝AI분석</a>
+        <a href="/board/paging">커뮤니티</a>
+        <a th:href="@{/map}">약국정보</a>
+        <th:bolck
+            class="mypage"
+            th:unless="${session.isEmpty()}"
+        >
+          <a href="" th:href="@{|/mypage/${session.loginMember.memberId}/fix|}">마이페이지</a>
+        </th:bolck>
+
+        <div>
+          <th:bolck
+              class="login"
+              th:if="${session.isEmpty()}"
+          >
+            <a href="" th:href="@{/login}">로그인</a>
+          </th:bolck>
+          <th:bolck
+              class="logout"
+              th:unless="${session.isEmpty()}"
+          >
+            <a href="" th:href="@{/logout}">로그아웃</a>
+          </th:bolck>
+        </div>
+      </nav>
+    </div>
+  </header>
+  <main id="surveyv3" class="surveyv3-result" role="main">
+    <section class="result-top">
+      <div class="inner">
+        <h3 id="result-name">
+          <span id="name-value"></span>님의 건강설문 결과입니다
+        </h3>
+        <dl>
+          <dt>성별:</dt>
+          <span id="gender-value"></span>
+          ㅤ
+          <dt>나이:</dt>
+          <span id="age-value"></span>
+          <!-- Display BMI value -->
+          ㅤ
+          <dt class="open-bmi-layer">BMI:</dt>
+          <span id="bmi-value"></span>
+          <dd><span id="height-value"></span></dd>
+          <dd><span id="weight-value"></span></dd>
+        </dl>
+        <div class="bmi-wrap">
+          <div class="graph">
+            <ul class="data">
+              <li class="lv1">저체중</li>
+              <li class="lv2">정상</li>
+              <li class="lv3">과체중</li>
+              <li class="lv4">비만</li>
+              <li class="lv5">고도비만</li>
+            </ul>
+            <span
+                class="dot"
+                id="bmi-dot"
+                style="display: block; margin-left: ${bmiDotPosition}%;"
+            ></span>
+            <ul class="label">
+              <li>&nbsp;</li>
+              <li>18.5</li>
+              <li>23</li>
+              <li>25</li>
+              <li>30</li>
+            </ul>
+          </div>
+          <p>앞으로도 꾸준히 관리 해보아요!</p>
+        </div>
+        <div class="recommend-wrap">
+          <img src="/img/icon-grade-GOOD.png" alt="">
+          <h4>좋은 생활습관이에요.</h4>
+          <ul class="bullet-item"></ul>
+        </div>
+        <p>* 본 결과는 의사의 처방을 대신하지 않습니다.</p>
+      </div>
+    </section>
+    <div class="survey-nav">
+      <h2>
+        추천영양성분
+        <em id="selected-count">0</em>
+      </h2>
+      <ul>
+        <li class="nav-item">
+          <div class="img-wrap" style="background-color: #f9d4bf">
+            <img src="/img/루테인.png" alt="" />
+          </div>
+          <div class="text-wrap">
+            <p>루테인</p>
+          </div>
+        </li>
+        <li class="nav-item">
+          <div class="img-wrap" style="background-color: lightyellow">
+            <img src="/img/비타민.png" alt="" />
+          </div>
+          <div class="text-wrap">
+            <p>비타민C</p>
+          </div>
+        </li>
+        <li class="nav-item">
+          <div class="img-wrap" style="background-color: #ebf5f5">
+            <img src="/img/칼슘.png" alt="" />
+          </div>
+          <div class="text-wrap">
+            <p>칼슘</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <!--    영양성분 분석-->
+    <section id="omega3" class="hidden" data-title="오메가3" data-color="#b1d9f2">
+      <div class="inner">
+        <div
+            class="header result-content-header"
+            data-color="#b1d9f2"
+            style="background-color: rgba(249, 212, 191, 0.5)"
+        >
+          <div class="left">
+            <h4>Omega 3</h4>
+            <ul class="omega-left">
+              <li># Helps improve blood triglycerides</li>
+              <li># Helps improve blood circulation</li>
+              <li># Helps with eye health</li>
+            </ul>
+          </div>
+          <div class="right">
+            <ul class="tag">
+              <li>
+                <span class="icon icon-eye"></span>
+                <p>눈</p>
+              </li>
+              <li>
+                <span class="icon icon-heart"></span>
+                <p>혈액순환</p>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="content">
+          <h1>추천 영양제</h1>
+          <p>
+            분석 결과를 토대로 추천하는 영양제입니다. 자세한 내용이
+            궁금하다면 제품을 클릭해주세요
+          </p>
+          <ul id="result1">
+            <li>
+              <a href="https://search.shopping.naver.com/catalog/21839321494?query=%EC%98%A4%EB%A9%94%EA%B0%803&NaPm=ct%3Dlgk86zo0%7Cci%3Daab56bbae994c01b9c17472b65b8e5df198d71a6%7Ctr%3Dslsl%7Csn%3D95694%7Chk%3D07a53635ea041363f45bacdbe51195011f956f24">
+                <img src="/img/프로메가오메가3.jpg" alt="" width="100" height="100"/>
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="footer omega3"></div>
+      </div>
+    </section>
+    <section id="hyals"  class="hidden" data-title="히알루론산" data-color="#f9d4bf">
+      <div class="inner">
+        <div
+            class="header result-content-header"
+            data-color="#f9d4bf"
+            style="background-color: rgba(214, 240, 254, 0.5)"
+        >
+          <div class="left2">
+            <h4>히알루론산</h4>
+            <ul>
+              <li># 소화과정에 필요한 발효효소</li>
+            </ul>
+          </div>
+          <div class="right">
+            <ul class="tag">
+              <li>
+                <span class="icon icon-bone"></span>
+                <p>뼈ㆍ관절</p>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="content">
+          <h1>추천 영양제</h1>
+          <p>
+            분석 결과를 토대로 추천하는 영양제입니다. 자세한 내용이
+            궁금하다면 제품을 클릭해주세요
+          </p>
+          <ul id="result2">
+            <li>
+              <a href="https://search.shopping.naver.com/catalog/21839321494?query=%EC%98%A4%EB%A9%94%EA%B0%803&NaPm=ct%3Dlgk86zo0%7Cci%3Daab56bbae994c01b9c17472b65b8e5df198d71a6%7Ctr%3Dslsl%7Csn%3D95694%7Chk%3D07a53635ea041363f45bacdbe51195011f956f24">
+                <img src="/img/프로메가오메가3.jpg" alt="" width="100" height="100"/>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+    <section id="probiotics" class="hidden" data-title="프로바이오틱스" data-color="#efe9d9">
+      <div class="inner">
+        <div
+            class="header result-content-header"
+            data-color="#efe9d9"
+            style="background-color: rgba(255, 255, 227, 0.5)"
+        >
+          <div class="left3">
+            <h4>프로바이오틱스</h4>
+            <ul>
+              <li># 유산균 증식 및 유해균 억제</li>
+              <li># 배변활동 원활에 도움을 줄 수 있음</li>
+            </ul>
+          </div>
+          <div class="right">
+            <ul class="tag">
+              <li>
+                <span class="icon icon-skinhealth"></span>
+                <p>항산화</p>
+              </li>
+              <li>
+                <span class="icon icon-skinmoist"></span>
+                <p>피부건강</p>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="content">
+          <h1>추천 영양제</h1>
+          <p>
+            분석 결과를 토대로 추천하는 영양제입니다. 자세한 내용이
+            궁금하다면 제품을 클릭해주세요
+          </p>
+          <ul id="result3">
+            <li>
+              <a href="https://search.shopping.naver.com/catalog/21839321494?query=%EC%98%A4%EB%A9%94%EA%B0%803&NaPm=ct%3Dlgk86zo0%7Cci%3Daab56bbae994c01b9c17472b65b8e5df198d71a6%7Ctr%3Dslsl%7Csn%3D95694%7Chk%3D07a53635ea041363f45bacdbe51195011f956f24">
+                <img src="/img/프로메가오메가3.jpg" alt="" width="100" height="100"/>
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+  </main>
+    <div class="btn-wrap">
+      <button class="btn btn-radius colored btn-finish">
+        <img src="/img/분석.png" alt="">
+        분석 종료하기</button>
+      <button class="btn btn-radius colored btn-screenshot">
+        <img src="/img/저장.png" alt="">
+        저장하기
+      </button>
+    </div>
+    <!-- Modal code -->
+    <div class="modal">
+      <div class="modal-content">
+        <p>분석을 종료하고 메인페이지로 이동하시겠습니까?</p>
+        <div class="modal-btn-wrap">
+          <button class="btn btn-radius colored confirm-btn">종료</button>
+          <button class="btn btn-radius colored cancel-btn">취소</button>
+        </div>
+      </div>
+    </div>
+  <footer>
+    <div class="footer_area">
+      <div class="top">
+        <img
+            class="footer_img"
+            th:src="@{../img/white-yagiyo.png}"
+            alt=""
+        />
+        <div class="footer_menu">
+          <a href="">이용약관</a>
+          <a href="">개인정보처리방침</a>
+        </div>
+      </div>
+
+      <!--footer - bottom  -->
+
+      <div class="bottom">
+        <div class="info">
+          <span class="title">주(야기요)</span>
+          <p></p>
+        </div>
+      </div>
+
+      <!--footer - copyright -->
+
+      <div class="copyright">
+        <p>Copyright 2023 YAGIYO. Allrights reserved.</p>
+      </div>
+    </div>
+  </footer>
+</div>
+<script src="https://html2canvas.hertzen.com/dist/html2canvas.min.js"></script>
+<script >
+/*저장버튼 스크린샷*/
+function saveScreenshot() {
+  // Hide the button menu
+  var buttonWrap = document.querySelector('.btn-wrap');
+  buttonWrap.style.display = 'none';
+
+  // Capture the body element of the current page and create a canvas object
+  html2canvas(document.body, {scale: 4}).then(function(canvas) {
+    // Convert the canvas to an image file and download it
+    var link = document.createElement('a');
+    link.style.display = 'none';
+    document.body.appendChild(link);
+
+    link.download = 'screenshot.png';
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+
+    document.body.removeChild(link);
+
+    // Show the button menu again
+    buttonWrap.style.display = 'block'; // set to 'inline-block' if needed
+  });
+}
+
+// Connect the saveScreenshot function to the button click event handler
+   document.querySelector('.btn-screenshot').addEventListener('click', saveScreenshot);
+
+</script>
+<script>
+  // Get the button element
+  let btn = document.querySelector('.btn-finish');
+
+  // Add a click event listener to the button
+  btn.addEventListener('click', function() {
+    // Get the modal element
+    let modal = document.querySelector('.modal');
+
+    // Display the modal
+    modal.style.display = 'block';
+
+    // Get the cancel button element
+    let cancelBtn = document.querySelector('.cancel-btn');
+
+    // Add a click event listener to the cancel button
+    cancelBtn.addEventListener('click', function() {
+      // Hide the modal
+      modal.style.display = 'none';
+    });
+
+    // Get the confirm button element
+    let confirmBtn = document.querySelector('.confirm-btn');
+
+    // Add a click event listener to the confirm button
+    confirmBtn.addEventListener('click', function() {
+      // Redirect to the local address
+      window.location.href = 'http://localhost:9080';
+
+      // Hide the modal
+      modal.style.display = 'none';
+    });
+  });
+</script>
+<script th:src="@{../js/result.js}"></script>
+<script th:src="@{../js/illness.js}"></script>
+<script th:src="@{../js/nutrient.js}"></script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="../../static/css/Identity.css" th:href="@{/css/Identity.css}">
+    <title>약관동의</title>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="top"></div>
+      <div class="main">
+        <h3>개인정보 처리방침 동의</h3>
+
+        <div class="section">
+        <h4>< 개인정보 수집 항목 및 수집목적 ></h4><br>
+        <li>수집항목 : 성명, 생년월일, 전화번호, 이메일 주소, 주소, 결제 정보 등</li><br>
+        <li>수집목적 : 서비스 제공, 고객문의 및 상담, 계약 이행 및 대금 결제, 회원 관리 등</li><br>
+          <hr>
+        <h4>< 개인정보 보유 및 이용기간 ></h4><br>
+        <br>
+        <li>보유기간 : 회원탈퇴 시 혹은 개인정보 삭제 요청 시까지</li><br>
+        <li>이용기간 : 서비스 제공 기간 동안 및 관련 법령에서 요구하는 기간까지</li><br>
+          <hr>
+        <h4>< 개인정보 제공 및 공유 ></h4><br>
+        <br>
+        <li>제공 및 공유 대상 : 공동인증서 발급기관, 배송업체, 업무 처리를 위탁받는 업체 등</li><br>
+        <li>제공 및 공유 목적 : 상품 배송, 서비스 제공을 위한 업무 처리, 고객 상담 등</li><br>
+          <hr>
+        <h4>< 개인정보 처리위탁 ></h4><br>
+        <br>
+        <li>처리위탁 대상 : 공동인증서 발급기관, 서버 및 데이터베이스 관리 업체 등</li><br>
+        <li>처리위탁 업무 내용 : 서비스 제공에 필요한 시스템 개발 및 유지보수, 고객 상담 및 문의 처리 등</li><br>
+          <hr>
+        <h4>< 개인정보 취급 위탁 ></h4><br>
+        <br>
+        <li>취급 위탁 대상 : 업무 처리를 위탁받는 업체 등</li><br>
+        <li>취급 위탁 업무 내용 : 상품 구매, 배송, 환불 및 교환 등</li><br>
+          <hr>
+        <h4>< 개인정보 취급위탁자의 관리 ></h4><br>
+        <br>
+        <li>취급위탁자의 관리 : 개인정보 처리방침 준수 강화 및 개인정보 보호를 위한 필요한 조치 수행</li><br>
+          <hr>
+        <h4>< 개인정보 열람, 정정, 삭제 ></h4><br>
+        <br>
+        <li>열람, 정정, 삭제 요청 방법 : 서비스 내 "개인정보관리"를 통한 요청 또는 이메일, 전화, FAX 등을 통한 요청</li><br>
+        <li>처리기간 및 방법 : 요청일로부터 최대 7일 이내에 처리하며, 처리 결과는 이메일 등으로 회신</li><br>
+          <hr>
+        <h4>< 개인정보 보호책임자 ></h4><br>
+        <br>
+        <li>성명 : 홍길동</li><br>
+        <li>연락처 : 02-1234-5678, privacy@company.com</li><br>
+          <hr>
+        <h4>< 동의 철회 방법 ></h4><br>
+        <br>
+        <li>철회 방법 : 서비스 내 "개인정보관리"를 통한 철회 또는 이메일, 전화, FAX 등을 통한 철회 요청</li><br>
+        <li>처리기간 : 요청일로부터 10일 이내  </li><br>
+        </div>
+        <br>
+
+        <button class="btn" onclick="closeWindow()">약관동의</button>
+      </div>
+      <div class="bottom"></div>
+    </div>
+    <script>
+		function closeWindow() {
+			window.close();
+		}
+	</script>
+  </body>
+</html>

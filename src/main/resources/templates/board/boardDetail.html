@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+
+  <title>커뮤니티</title>
+</head>
+<script src="https://code.jquery.com/jquery-3.6.3.min.js"
+        integrity="sha256-pvPw+upLPUjgMXY0G+8O0xUf+/Im1MZjXxxgOcBQBXU=" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/xeicon@2.3.3/xeicon.min.css">
+<link rel="stylesheet" href="../css/boardDetail.css">
+<body>
+<div class="wrapper">
+  <!-- Header  -->
+
+  <header>
+    <div class="top">
+      <div class="logo">
+        <a th:href="@{/}">
+          <img src="../img/black-yagiyo.png" alt=""
+          /></a>
+      </div>
+
+      <!--      검색어   -->
+      <div class="search_box">
+        <form th:action="@{/search}" method="get">
+          <input type="text" name="query" value=""/>
+          <button type="submit"></button>
+        </form>
+        <!-- <p id="recent-search"></p> -->
+      </div>
+
+      <nav class="gnb_box">
+        <span class="hot">HOT</span>
+        <a th:href="@{/name}">📝AI분석</a>
+        <a href="/board/paging">커뮤니티</a>
+        <a th:href="@{/map}">약국정보</a>
+        <th:bolck
+                class="mypage"
+                th:unless="${session.isEmpty()}"
+        >
+          <a href="" th:href="@{|/mypage/${session.loginMember.memberId}/fix|}">마이페이지</a>
+        </th:bolck>
+
+        <div>
+          <th:bolck
+                  class="login"
+                  th:if="${session.isEmpty()}"
+          >
+            <a href="" th:href="@{/login}">로그인</a>
+          </th:bolck>
+          <th:bolck
+                  class="logout"
+                  th:unless="${session.isEmpty()}"
+          >
+            <a href="" th:href="@{/logout}">로그아웃</a>
+          </th:bolck>
+        </div>
+      </nav>
+    </div>
+  </header>
+
+  <div class="content">
+    <div class="header">
+      <div class="title">
+        <div class="title_text" th:text="${board.boardTitle}"></div>
+      </div>
+      <div class="header_contents">
+        <div class="board_writer" th:text="${board.boardWriter}"></div>
+        <div class="time" th:text="${board.boardCreatedTime}"></div>
+        <div class="hits" th:text="${board.boardHits}"></div>
+      </div>
+      <div class="board_contents" th:text="${board.boardContents}"></div>
+      <div th:if="${board.fileAttached == 1}">
+        <div th:each="fileName: ${board.storedFileName}">
+          <img th:src="@{|/upload/${fileName}|}" alt=""></div>
+      </div>
+    </div>
+    <div class="btn_box">
+      <button type="button" onclick="listReq()">목록</button>
+      <button type="button" onclick="updateReq()" hidden="true" id="btn_update">수정</button>
+      <button type="button" onclick="deleteReq()" hidden="true" id="btn_delete">삭제</button>
+    </div>
+    <!-- 댓글 작성 부분 -->
+    <div id="comment-write">
+      <span class="writer"></span><input type="text" th:value="${session.loginMember.nick}" id="commentWriter"
+                                            readonly></input>
+    </div>
+    <div class="comment_btn">
+      <input type="text" id="commentContents" placeholder="내용">
+      <button id="comment-write-btn" onclick="commentWrite()">댓글작성</button>
+    </div>
+    <!-- 댓글 출력 부분 -->
+    <br>
+    <br>
+    <h3>댓글</h3>
+
+
+    <div class="comment_box ">
+      <div id="comment-list">
+        <table>
+          <tr>
+            <!--            <th>댓글번호</th>-->
+            <th>작성자</th>
+            <th>내용</th>
+            <th>작성시간</th>
+            <th>　</th>
+          </tr>
+          <!--            <td hidden th:text="${comment.id}"></td>-->
+          <tr th:each="comment: ${commentList}">
+            <td th:text="${comment.commentWriter}"></td>
+            <td th:text="${comment.commentContents}"></td>
+            <td th:text="${comment.commentCreatedTime}"></td>
+            <td><button style="background-color: white; border-width: 0px;" th:attr="onclick='deleteComment(\'' + ${comment.id} + '\', \'' + ${comment.boardId} + '\')'">❌</button></td>
+          </tr>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <div class="footer_area">
+      <div class="top">
+        <img
+                class="footer_img"
+                th:src="@{../img/white-yagiyo.png}"
+                alt=""
+        />
+        <div class="footer_menu">
+          <a href="">이용약관</a>
+          <a href="">개인정보처리방침</a>
+        </div>
+      </div>
+
+      <!--footer - bottom  -->
+
+      <div class="bottom">
+        <div class="info">
+          <span class="title">주(야기요)</span>
+          <p></p>
+        </div>
+      </div>
+
+      <!--footer - copyright -->
+
+      <div class="copyright">
+        <p>Copyright 2023 YAGIYO. Allrights reserved.</p>
+      </div>
+    </div>
+  </footer>
+</div>
+<script th:inline="javascript">
+
+const commentWrite = () => {
+  const writer = document.getElementById("commentWriter").value;
+  const contents = document.getElementById("commentContents").value;
+  console.log("작성자: ", writer);
+  console.log("내용: ", contents);
+  const id = [[${board.id}]];
+
+ $.ajax({
+    type: "post",
+    url: "/comment/save",
+    data: {
+      "commentWriter": writer,
+      "commentContents": contents,
+      "boardId": id
+    },
+    success: function (res) {
+      console.log("요청성공", res);
+      $.ajax({
+        type: "get",
+        url: "/comment/list/" + id,
+        success: function (res) {
+          console.log("댓글 조회 성공", res);
+          let output = "<table>";
+          output += "<th>작성자</th>";
+          output += "<th>내용</th>";
+          output += "<th>작성시간</th>";
+          output += "<th>　</th></tr>"; // 삭제 버튼 추가
+          for (let i in res) {
+            output += "<tr>";
+            output += "<td>" + res[i].commentWriter + "</td>";
+            output += "<td>" + res[i].commentContents + "</td>";
+            output += "<td>" + res[i].commentCreatedTime + "</td>";
+            output += '<td><button onclick="deleteComment(' + res[i].id + ', ' + id + ')" style="background-color: white; border-width: 0px;">❌</button></td>';
+
+            output += "</tr>";
+          }
+          output += "</table>";
+          document.getElementById('comment-list').innerHTML = output;
+          document.getElementById('commentContents').value = '';
+        },
+        error: function (err) {
+          console.log("댓글 조회 실패", err);
+        }
+      });
+    },
+    error: function (err) {
+      console.log("요청실패", err);
+    }
+  });
+}
+    const listReq = () => {
+        console.log("목록 요청");
+        const page = [[${page}]];
+        location.href = "/board/paging?page="+page;
+    }
+    const updateReq = () => {
+        console.log("수정 요청");
+        const id = [[${board.id}]];
+        location.href = "/board/update/" + id;
+    }
+    const deleteReq = () => {
+        console.log("삭제 요청");
+        const id = [[${board.id}]];
+        location.href = "/board/delete/" + id;
+    }
+
+     const writer = [[${board.boardWriter}]];
+     const nick = [[${session.loginMember.nick}]];
+     const userNickname = "${session.loginMember.nick}";
+     const btn_update = document.getElementById('btn_update');
+     const btn_delete = document.getElementById('btn_delete');
+     if(nick == writer) {
+     btn_update.hidden = false;
+     btn_delete.hidden = false;
+     }else{
+     btn_update.hidden = true;
+     btn_delete.hidden = true;
+     }
+
+function deleteComment(commentId, boardId) {
+  if (confirm("댓글을 삭제하시겠습니까?")) {
+    $.ajax({
+      url: "/comment/delete",
+      type: "DELETE",
+      data: {
+        commentId: commentId,
+        boardId: String(boardId) // boardId를 문자열로 변환
+      },
+      success: function(response) {
+        const deletedComment = $(`#comment-${commentId}`);
+        deletedComment.fadeOut('normal', function() {
+          $(this).remove();
+        });
+        location.reload();
+      },
+      error: function() {
+        alert("댓글 삭제에 실패하였습니다.");
+      }
+    });
+  }
+}
+
+</script>
+</body>
+</html>

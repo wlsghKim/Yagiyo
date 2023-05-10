@@ -1,0 +1,12 @@
+drop user c##yagiyo;
+--계정생성
+CREATE USER c##yagiyo IDENTIFIED BY yagiyo1234
+    DEFAULT TABLESPACE users
+    TEMPORARY TABLESPACE temp
+    PROFILE DEFAULT;
+--권한부여
+GRANT CONNECT, RESOURCE TO c##yagiyo;
+GRANT CREATE VIEW, CREATE SYNONYM TO c##yagiyo;
+GRANT UNLIMITED TABLESPACE TO c##yagiyo;
+--락 풀기
+ALTER USER c##yagiyo ACCOUNT UNLOCK;

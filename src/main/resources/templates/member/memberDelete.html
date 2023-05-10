@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link
+        rel="stylesheet"
+        href="../../static/css/memberDelete.css"
+        th:href="@{/css/memberDelete.css}"
+    />
+<title>탈퇴화면</title>
+</head>
+<body>
+
+<div class="wrapper">
+    <!-- Header  -->
+
+    <header>
+        <div class="top">
+            <div class="logo">
+                <a th:href="@{/}">
+                    <img src="../../img/black-yagiyo.png" alt=""
+                    /></a>
+            </div>
+
+            <!--      검색어   -->
+            <div class="search_box">
+                <form th:action="@{/search}" method="get">
+                    <input type="text" name="query" value=""/>
+                    <button type="submit"></button>
+                </form>
+                <!-- <p id="recent-search"></p> -->
+            </div>
+
+            <nav class="gnb_box">
+                <span class="hot">HOT</span>
+                <a th:href="@{/name}">📝AI분석</a>
+                <a href="/board/paging">커뮤니티</a>
+                <a th:href="@{/map}">약국정보</a>
+                <th:bolck
+                        class="mypage"
+                        th:unless="${session.isEmpty()}"
+                >
+                    <a href="" th:href="@{|/mypage/${session.loginMember.memberId}/fix|}">마이페이지</a>
+                </th:bolck>
+
+                <div>
+                    <th:bolck
+                            class="login"
+                            th:if="${session.isEmpty()}"
+                    >
+                        <a href="" th:href="@{/login}">로그인</a>
+                    </th:bolck>
+                    <th:bolck
+                            class="logout"
+                            th:unless="${session.isEmpty()}"
+                    >
+                        <a href="" th:href="@{/logout}">로그아웃</a>
+                    </th:bolck>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+<div class="delete">
+
+<h1 class="h1">(ㅠ_ㅠ)</h1>
+<h2 class="h2"> 정말로 <span>탈퇴</span>하시겠습니까?</h2>
+<!--<h5>회원을 탈퇴하실려면 비밀번호를 입력해주세요.</h5>-->
+<form th:object="${memberDeleteForm}" method="post" action="">
+<div class="passwd">
+    <input type="password" id="pw" name="pw" placeholder="회원을 탈퇴하실려면 비밀번호를 입력해주세요." >
+    <div id="pwError">　</div>
+    <button th:onclick="'javascript:history.back()'" type="button">뒤로가기</button><br>
+    <button disabled="true" type="submit" id="buttonDel">탈퇴</button>
+</div>
+    <!-- 모달창 추가 -->
+    <div id="myModal" class="modal" hidden="true" >
+        <div class="modal-content">
+            <h4>정말로 탈퇴하시겠습니까?</h4>
+            <button id="confirmDel">확인</button>
+            <button id="cancelDel">취소</button>
+        </div>
+    </div>
+</form>
+
+
+
+    <footer>
+        <div class="footer_area">
+            <div class="top">
+                <img
+                        class="footer_img"
+                        th:src="@{../../img/white-yagiyo.png}"
+                        alt=""
+                />
+                <div class="footer_menu">
+                    <a href="">이용약관</a>
+                    <a href="">개인정보처리방침</a>
+                </div>
+            </div>
+
+            <!--footer - bottom  -->
+
+            <div class="bottom">
+                <div class="info">
+                    <span class="title">주(야기요)</span>
+                    <p></p>
+                </div>
+            </div>
+
+            <!--footer - copyright -->
+
+            <div class="copyright">
+                <p>Copyright 2023 YAGIYO. Allrights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</div>
+
+<script th:inline="javascript">
+    const pwError = document.getElementById("pwError");
+    const pw = document.getElementById("pw");
+    const buttonDel = document.getElementById("buttonDel");
+    const modal = document.getElementById("myModal");
+    const confirmBtn = document.getElementById("confirmDel");
+    const cancelBtn = document.getElementById("cancelDel");
+
+    pw.addEventListener("input", function(e) {
+        if (pw.value === /*[[${session.loginMember.pw}]]*/ '') {
+            pwError.style.color = 'green';
+            pwError.innerHTML = "비밀번호가 일치합니다."
+            buttonDel.disabled = false;
+        } else {
+            pwError.style.color = 'red';
+            pwError.innerHTML = "비밀번호가 일치하지 않습니다.";
+            buttonDel.disabled = true;
+        }
+    });
+
+    // 탈퇴 버튼을 누르면 모달창 표시
+    buttonDel.addEventListener("click", function(e) {
+        e.preventDefault();
+        myModal.hidden = false;
+        modal.style.display = "block";
+    });
+
+    // 확인 버튼을 누르면 탈퇴 실행
+    confirmBtn.addEventListener("click", function(e) {
+        modal.style.display = "none";
+        document.querySelector('form').submit(); // 탈퇴 폼 제출
+    });
+
+    // 취소 버튼을 누르면 모달창 숨김
+    cancelBtn.addEventListener("click", function(e) {
+        modal.style.display = "none";
+    });
+</script>
+</div>
+</body>
+</html>

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title th:text="${pageTitle}">체중</title>
+  <link rel="stylesheet" href="" th:href="@{/css/Analysis.css}" />
+  <link rel="stylesheet" href="" th:href="@{/css/cmkg.css}" />
+  <link rel="stylesheet" href="" th:href="@{/css/closeModal.css}" />
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <style>
+    #overlay {
+  position: fixed;
+  z-index: 1000;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.loader {
+  border: 16px solid #f3f3f3;
+  border-top: 16px solid #3498db;
+  border-radius: 50%;
+  width: 120px;
+  height: 120px;
+  animation: spin 2s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+  </style>
+</head>
+<div id="survey">
+  <div class="survey-wrap">
+    <div class="survey-contents">
+      <div class="survey-contents-inner">
+        <!-- HTML code for the modal -->
+        <div id="myModal" class="modal">
+          <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>분석을 종료하시겠습니까?</p>
+            <button id="yes-btn">Yes</button>
+            <button id="no-btn">No</button>
+          </div>
+        </div>
+        <a href="#" class="close-survey" onclick="openModal(); return false;" >
+          <img th:src="@{/img/close2.png}" alt="close" />
+        </a>
+        <div class="survey-test">
+          <nav class="survey-test-header">
+            <ul class="step-list-wrap">
+              <li data="기본정보">
+                <span>기본정보</span>
+              </li>
+              <img src="/img/right2.png" />
+              <li data="증상/불편">
+                <span>증상/불편</span>
+              </li>
+              <img src="/img/right2.png" />
+              <li data="생활습관" class="on">
+                <span>생활습관</span>
+              </li>
+              <img src="/img/right2.png" />
+              <li data="기타">
+                <span>기타</span>
+              </li>
+            </ul>
+          </nav>
+          <div class="survey-progress">
+            <div id="survey-progress-rate" style="width: 100%"></div>
+          </div>
+          <div class="survey-question-contens">
+            <section class="question-section">
+              <em id="qNum">질문 8</em>
+              <h2 id="qTitle" maxallowed="1" class>
+                <p>고객님의 몸무게를 적어주세요</p>
+                <span class></span>
+              </h2>
+              <p id="qContent">
+                영양성분 추천에 체질량지수(BMI)를 활용합니다
+              </p>
+              <ul class="question-answer-wrap">
+                <li>
+                  <div class="question-input-field" style="padding-left: 0">
+                    <input
+                        type="radio"
+                        class="input-radio input-answer"
+                        name="answer"
+                        value="351"
+                        data-only="1"
+                        checked
+                        style="display: none"
+                    />
+                    <input
+                        id="kilogram"
+                        type="tel"
+                        class="input-text input-small input-full"
+                        placeholder="몸무게"
+                        maxlength="6"
+                        min="30"
+                        max="190"
+                        required="true"
+                    />
+                    <span class="unit">kg</span>
+                  </div>
+                  <span id="weight-value"></span>
+                </li>
+              </ul>
+            </section>
+          </div>
+          <div id="next-error" class="survey-errormsg"></div>
+          <div class="survey-question-footer">
+            <button
+                id="btn-prev"
+                class="btn btn-radius"
+                onclick="window.location.href='http://localhost:9080/height'"
+            >
+              이전
+            </button>
+            <button
+                id="btn-next"
+                class="btn btn-radius btn-dark"
+                onclick="nextBtn('{{gender}}', '{{name}}', '{{age}}', '{{illness}}', '{{dosage}}', '{{point}}', '{{height}}');"
+            >
+              완료
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script th:src="@{../js/closeModal.js}"></script>
+<script th:src="@{../js/weight.js}"></script>
+
+</body>
+</html>

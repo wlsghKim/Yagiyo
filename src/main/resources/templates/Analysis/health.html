@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="ko"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title th:text="${pageTitle}">운동횟수</title>
+  <link rel="stylesheet" href="" th:href="@{/css/Analysis.css}">
+  <link rel="stylesheet" href="" th:href="@{/css/closeModal.css}">
+  <style>
+
+/*질문외부 간격*/
+.question-answer-wrap .label-question {
+  padding-left: 44px;
+  line-height: 24px;
+}
+/*질문내부규격*/
+.question-answer-wrap li {
+  margin-top: 20px;
+}
+/* 질문위아래 간격 */
+.question-answer-wrap {
+  padding: 28px 0;
+}
+
+input[type='radio'] {
+  display: none;
+}
+#num1:checked + span {
+  background-image: url(/img/icon-radio-on.png);
+}
+#num1 + span {
+  position: absolute;
+  left: 14%;
+  width: 24px;
+  height: 24px;
+  background-image: url(/img/icon-radio-off.png);
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-size: 24px;
+}
+#num2:checked + span {
+  background-image: url(/img/icon-radio-on.png);
+}
+#num2 + span {
+  position: absolute;
+  left: 14%;
+  width: 24px;
+  height: 24px;
+  background-image: url(/img/icon-radio-off.png);
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-size: 24px;
+}
+#num3:checked + span {
+  background-image: url(/img/icon-radio-on.png);
+}
+#num3 + span {
+  position: absolute;
+  left: 14%;
+  width: 24px;
+  height: 24px;
+  background-image: url(/img/icon-radio-off.png);
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
+  background-size: 24px;
+}
+  </style>
+</head>
+<body>
+<div id="survey">
+  <div class="survey-wrap">
+    <div class="survey-contents">
+      <div class="survey-contents-inner">
+        <!-- HTML code for the modal -->
+        <div id="myModal" class="modal">
+          <div class="modal-content">
+            <span class="close">&times;</span>
+            <p>분석을 종료하시겠습니까?</p>
+            <button id="yes-btn">Yes</button>
+            <button id="no-btn">No</button>
+          </div>
+        </div>
+        <a href="#" class="close-survey" onclick="openModal(); return false;">
+          <img th:src="@{/img/close2.png}" alt="close" />
+        </a>
+        <div class="survey-test">
+          <nav class="survey-test-header">
+            <ul class="step-list-wrap">
+              <li data="기본정보">
+                <span>기본정보</span>
+              </li>
+              <img src="/img/right2.png" />
+              <li data="증상/불편">
+                <span>증상/불편</span>
+              </li>
+              <img src="/img/right2.png" />
+              <li data="생활습관" class="on">
+                <span>생활습관</span>
+              </li>
+              <img src="/img/right2.png" />
+              <li data="기타">
+                <span>기타</span>
+              </li>
+            </ul>
+          </nav>
+          <div class="survey-progress">
+            <div id="survey-progress-rate" style="width: 55%"></div>
+          </div>
+          <div class="survey-question-contens">
+            <section class="question-section">
+              <em id="qNum">질문 9</em>
+              <h2 id="qTitle" maxallowed="1" class>
+                <p>일주일에 운동을 얼마나 하시나요?</p>
+                <span class></span>
+              </h2>
+              <p id="qContent"></p>
+              <ul class="question-answer-wrap">
+                <li>
+                  <label class="label-radio label-question">
+                    <input
+                        id="num1"
+                        type="radio"
+                        class="input-radio input-answer"
+                        name="answer"
+                        value="5"
+                        data-only="null"
+                    />
+                    <span></span>
+                    운동을 많이 한다(주 4회이상)
+                  </label>
+                </li>
+                <li>
+                  <label class="label-radio label-question">
+                    <input
+                        id="num2"
+                        type="radio"
+                        class="input-radio input-answer"
+                        name="answer"
+                        value="5"
+                        data-only="null"
+                    />
+                    <span></span>
+                    운동을 적당히 한다(주 2~3회)
+                  </label>
+                </li>
+                <li>
+                  <label class="label-radio label-question">
+                    <input
+                        id="num3"
+                        type="radio"
+                        class="input-radio input-answer"
+                        name="answer"
+                        value="3"
+                        data-only="null"
+                    />
+                    <span></span>
+                    운동을 거의 하지 않는다(주 1회이하)
+                  </label>
+                </li>
+              </ul>
+            </section>
+          </div>
+          <div class="survey-errormsg"></div>
+          <div class="survey-question-footer">
+            <button
+                id="btn-prev"
+                class="btn btn-radius"
+                onclick="window.location.href='http://localhost:9080/weight'"
+            >
+              이전
+            </button>
+            <button
+                id="btn-next"
+                class="btn btn-radius btn-dark"
+                onclick="handleNextClick('{{gender}}', '{{name}}', '{{age}}', '{{illness}}', '{{dosage}}', '{{point}}', '{{height}}', '{{weight}}');"
+            >
+              다음
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script th:src="@{../js/closeModal.js}"></script>
+    <script>
+          function handleNextClick(defaultGender, defaultName, defaultAge, defaultIllness, defaultDosage, defaultPoint, defaultHeight, defaultWeight) {
+            const num1Radio = document.getElementById('num1');
+            const num2Radio = document.getElementById('num2');
+            const num3Radio = document.getElementById('num3');
+            const errorMsg = document.querySelector('.survey-errormsg');
+
+            if (
+              !num1Radio.checked &&
+              !num2Radio.checked &&
+              !num3Radio.checked
+            ) {
+              errorMsg.textContent = '답변을 입력하세요!';
+            } else {
+              // Clear error message and navigate to the next page
+              errorMsg.textContent = '';
+
+              nextError.innerHTML = '';
+              const urlParams = new URLSearchParams(window.location.search);
+              const name = urlParams.get('name') || defaultName;
+              const gender = urlParams.get('gender') || defaultGender;
+              const age = urlParams.get('age') || dufaultAGe;
+              let illness = urlParams.get('illness') || defaultIllness;
+              let dosage = urlParams.get('dosage') || defaultDosage;
+              let point = urlParams.get('point') || defaultPoint;
+              const height = urlParams.get('height') || dufaultHeight;
+              const weight = urlParams.get('weight') || dufaultWeight;
+              const bmi = calculateBMI(height, weight);
+              let inputValue = selectedAnswers.join(',');
+
+               // navigate to the result page
+            let resultURL =
+              'http://localhost:9080/health2?name=' +
+              encodeURIComponent(name) +
+              '&gender=' +
+              encodeURIComponent(gender) +
+              '&age=' +
+              encodeURIComponent(age) +
+              '&illness=' +
+              encodeURIComponent(illness) +
+              '&dosage=' +
+              encodeURIComponent(dosage) +
+              '&point=' +
+              encodeURIComponent(point)+
+              '&height=' +
+              encodeURIComponent(height) +
+              '&weight=' +
+              encodeURIComponent(weight) +
+              '&bmi=' +
+              encodeURIComponent(bmi) +
+              '&bmiDot=' +
+              encodeURIComponent(bmi)+
+              '&health=' +
+              encodeURIComponent(weight) ;
+            window.location.href = resultURL;
+            return true;
+
+
+            }
+          }
+
+        </script>
+
+</body>
+</html>

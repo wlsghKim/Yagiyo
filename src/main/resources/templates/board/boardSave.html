@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+
+    <title>글작성</title>
+</head>
+<link
+        rel="stylesheet"
+        href="//cdn.jsdelivr.net/npm/xeicon@2.3.3/xeicon.min.css"
+/>
+<link rel="stylesheet" href="../css/boardsave.css"/>
+<body>
+<div class="wrapper">
+    <!-- Header  -->
+
+    <header>
+        <div class="top">
+            <div class="logo">
+                <a th:href="@{/}">
+                    <img src="../img/black-yagiyo.png" alt=""
+                    /></a>
+            </div>
+
+            <!--      검색어   -->
+            <div class="search_box">
+                <form th:action="@{/search}" method="get">
+                    <input type="text" name="query" value=""/>
+                    <button type="submit"></button>
+                </form>
+                <!-- <p id="recent-search"></p> -->
+            </div>
+
+            <nav class="gnb_box">
+                <span class="hot">HOT</span>
+                <a th:href="@{/name}">📝AI분석</a>
+                <a href="/board/paging">커뮤니티</a>
+                <a th:href="@{/map}">약국정보</a>
+                <th:bolck
+                        class="mypage"
+                        th:unless="${session.isEmpty()}"
+                >
+                    <a href="" th:href="@{|/mypage/${session.loginMember.memberId}/fix|}">마이페이지</a>
+                </th:bolck>
+
+                <div>
+                    <th:bolck
+                            class="login"
+                            th:if="${session.isEmpty()}"
+                    >
+                        <a href="" th:href="@{/login}">로그인</a>
+                    </th:bolck>
+                    <th:bolck
+                            class="logout"
+                            th:unless="${session.isEmpty()}"
+                    >
+                        <a href="" th:href="@{/logout}">로그아웃</a>
+                    </th:bolck>
+                </div>
+            </nav>
+        </div>
+    </header>
+    <div class="save_box">
+        <h3>글작성</h3>
+        <form
+                action="/board/save"
+                method="post"
+                enctype="multipart/form-data"
+        >
+            <!-- <input type="hidden" name="boardWriter"><br>-->
+            <div class="row row1">
+                닉네임 : <input
+                    type="text"
+                    name="boardWriter"
+                    th:value="${session.loginMember.nick}"
+                    readonly
+            />
+            </div>
+            <div class="row row2">
+                 <input type="hidden" name="boardPass"/>
+            </div>
+            <div class="row row3">
+                제목 :<input type="text" name="boardTitle"/>
+            </div>
+            <div class="row row4">
+                <div>
+                <textarea id="textarea"
+                        name="boardContents"
+                        cols="200"
+                        rows="50"
+                ></textarea>
+                </div>
+            </div>
+            <label for="boardFile"></label>
+            <input type="file" multiple name="boardFile" id="boardFile" accept="image/*" onchange="previewImage(this);"><br>
+            <div id="preview" hidden>
+                <img id="imagePreview" src="#" alt="">
+            </div>
+            <div class="bottom_btn">
+                <div class="submit">
+                    <input type="submit" value="완료"/>
+                </div>
+                <div class="board_paging">
+                    <a href="/board/paging">목록</a>
+                </div>
+            </div>
+        </form>
+    </div>
+    <footer>
+        <div class="footer_area">
+            <div class="top">
+                <img
+                        class="footer_img"
+                        th:src="@{../img/white-yagiyo.png}"
+                        alt=""
+                />
+                <div class="footer_menu">
+                    <a href="">이용약관</a>
+                    <a href="">개인정보처리방침</a>
+                </div>
+            </div>
+
+            <!--footer - bottom  -->
+
+            <div class="bottom">
+                <div class="info">
+                    <span class="title">주(야기요)</span>
+                    <p></p>
+                </div>
+            </div>
+
+            <!--footer - copyright -->
+
+            <div class="copyright">
+                <p>Copyright 2023 YAGIYO. Allrights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</div>
+<script th:inline="javascript">
+    function previewImage(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('imagePreview').setAttribute('src', e.target.result);
+                    preview.hidden=false;
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+</script>
+
+</body>
+</html>
